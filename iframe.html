@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>iFrame</title>
+		<style></style>
+	</head>
+	<body>
+		<h1>Welcome to My Iframe Website</h1>
+
+		<div id="pdf-viewer"></div>
+
+		<p>This is some additional content on the page.</p>
+
+		<script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
+		<script>
+			const url = "resume.pdf"; // Replace with the actual path to your PDF file
+
+			// Asynchronous download PDF
+			const loadingTask = pdfjsLib.getDocument(url);
+			loadingTask.promise.then(function (pdf) {
+				// Fetch the first page
+				pdf.getPage(1).then(function (page) {
+					const scale = 1.5;
+					const viewport = page.getViewport({ scale });
+
+					// Prepare canvas using PDF page dimensions
+					const canvas = document.createElement("canvas");
+					const context = canvas.getContext("2d");
+					canvas.width = viewport.width;
+					canvas.height = viewport.height;
+
+					// Render PDF page into canvas context
+					const renderContext = {
+						canvasContext: context,
+						viewport: viewport,
+					};
+					page.render(renderContext).promise.then(function () {
+						document.getElementById("pdf-viewer").appendChild(canvas);
+					});
+				});
+			});
+		</script>
+	</body>
+</html>
